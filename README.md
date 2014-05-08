@@ -1,4 +1,4 @@
-FinancialData.jl
+FinancialSeries
 ================
 
 Data structures for financial time series
