@@ -27,4 +27,3 @@ function FinancialTimeSeries{T,N}(ta::TimeArray{T,N}, ticker::ASCIIString)
      dates = datetolastsecond(ta.timestamp)
      FinancialTimeSeries(dates, ta.values, ta.colnames, Stock(Ticker(ticker)))
 end
-

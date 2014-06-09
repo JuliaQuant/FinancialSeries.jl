@@ -96,4 +96,3 @@ TickData{T<:Float64,N}(d::DateTime{ISOCalendar,UTC}, v::Array{T,N}, c::Array{ASC
 #         end
 #     end
 # end
-

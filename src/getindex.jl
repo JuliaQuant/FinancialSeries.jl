@@ -67,4 +67,3 @@ end
 
 # day of week
 # getindex{T,N}(ft::Union(FinancialTimeSeries, TickData){T,N}, d::DAYOFWEEK) = ft[dayofweek(ft.timestamp) .== d]
-
