@@ -1,8 +1,7 @@
-using TimeSeries, Datetime
-
 module FinancialSeries
 
-using TimeSeries, Datetime 
+using TimeSeries, Reexport
+@reexport using TimeSeries
 
 import Base: show, getindex, add!
 
@@ -17,10 +16,10 @@ export AbstractInstrument, AbstractCurrency, AbstractFinancialID,
 
 include("instruments.jl")
 include("financialtimeseries.jl")
-include("tickdata.jl")
+#include("tickdata.jl")
 include("show.jl")
-include("getindex.jl")
-include("utilities.jl")
+#include("getindex.jl")
+#include("utilities.jl")
 include("readwrite.jl")
 
 end 

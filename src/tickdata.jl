@@ -1,11 +1,11 @@
 type TickData{T<:Float64,N}  <: AbstractTimeSeries
 
-    timestamp::Vector{DateTime{ISOCalendar,UTC}}
+    timestamp::Vector{Date}
     values::Array{T,N}
     colnames::Vector{ASCIIString}
     instrument::AbstractInstrument
 
-    function TickData(timestamp::Vector{DateTime{ISOCalendar,UTC}}, 
+    function TickData(timestamp::Vector{Date}, 
                       values::Array{T,N},
                       colnames::Vector{ASCIIString},
                       instrument::AbstractInstrument)
@@ -27,8 +27,8 @@ type TickData{T<:Float64,N}  <: AbstractTimeSeries
     end
 end
 
-TickData{T<:Float64,N}(d::Vector{DateTime{ISOCalendar,UTC}}, v::Array{T,N}, c::Vector{ASCIIString}, t::AbstractInstrument) = TickData{T,N}(d,v,c,t)
-TickData{T<:Float64,N}(d::DateTime{ISOCalendar,UTC}, v::Array{T,N}, c::Array{ASCIIString,1}, t::AbstractInstrument) = TickData([d],v,c,t)
+TickData{T<:Float64,N}(d::Vector{Date}, v::Array{T,N}, c::Vector{ASCIIString}, t::AbstractInstrument) = TickData{T,N}(d,v,c,t)
+TickData{T<:Float64,N}(d::Date, v::Array{T,N}, c::Array{ASCIIString,1}, t::AbstractInstrument) = TickData([d],v,c,t)
 
 # ########################### TickData 
 #  

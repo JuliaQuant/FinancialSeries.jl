@@ -1,6 +1,7 @@
 ###########################  FinancialTimeSeries & TickData
  
-function show(io::IO, ft::Union(FinancialTimeSeries, TickData))
+#function show(io::IO, ft::Union(FinancialTimeSeries, TickData))
+function show(io::IO, ft::FinancialTimeSeries)
   # variables 
   nrow          = size(ft.values, 1)
   ncol          = size(ft.values, 2)
@@ -19,8 +20,7 @@ function show(io::IO, ft::Union(FinancialTimeSeries, TickData))
       end
 
   # summary line
-  print(io,@sprintf("%dx%d %s %s to %s", nrow, ncol, typeof(ft), string(ft.timestamp[1]), string(ft.timestamp[nrow])))
-  println(io,"")
+  println(io,@sprintf("%dx%d FinancialTimeSeries: %s %s to %s", nrow, ncol, ft.metadata.ticker, string(ft.timestamp[1]), string(ft.timestamp[nrow])))
   println(io,"")
 
   # row label line
