@@ -1,8 +1,12 @@
 module FinancialSeries
 
-using Dates
-using TimeSeries#, Reexport
-#@reexport using TimeSeries
+# if VERSION < v"0.4-"
+#   using Dates
+# else
+#   using Base.Dates
+# end
+using Reexport
+@reexport using TimeSeries
 
 import Base: show, getindex#, add!
 

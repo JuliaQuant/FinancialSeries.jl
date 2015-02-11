@@ -1,3 +1,13 @@
+# type TimeArrayMeta{T<:Float64, N, M} <: AbstractTimeSeries
+#   ta::TimeArray{T,N}
+#   metadata::M
+# end
+
+type FinancialTimeSeries{T<:Float64, N, M<:Union(AbstractInstrument, AbstractCurrency)} <: AbstractTimeSeries
+  ta::TimeArray{T,N}
+  instrument::M
+end
+
 #typealias FinancialTimeSeries{T,N,M} TimeArray{Float64,N,AbstractInstrument}
 ##typealias FinancialTimeSeries{T<:Float64,N,M<:AbstractInstrument} TimeArray{T,N,M}
 #typealias FinancialTimeSeries{T,N,M} TimeArray{T<:Float64,N,M<:AbstractInstrument}
@@ -5,27 +15,27 @@
 #typealias FinancialTimeSeries{N} TimeArray{Float64,N,AbstractInstrument}
 #typealias FinancialTimeSeries{Float64,N,AbstractInstrument} TimeArray{Float64,N,AbstractInstrument}
 
-type FinancialTimeSeries{T<:Float64, N, M<:AbstractInstrument} <: AbstractTimeSeries
-  #timestamp::Vector{DateTime{ISOCalendar,UTC}}
-  timestamp::Vector{DateTime}
-  values::Array{T,N}
-  colnames::Vector{ASCIIString}
-  instrument::AbstractInstrument
-  # inner constructor
-  function FinancialTimeSeries(#timestamp::Vector{DateTime{ISOCalendar,UTC}},
-                               timestamp::Vector{DateTime},
-                               values::Array{T,N},
-                               colnames::Vector{ASCIIString},
-                               instrument::AbstractInstrument)
-    nrow, ncol = size(values, 1), size(values, 2)
-    nrow != size(timestamp, 1) ? error("values must match length of timestamp"):
-      ncol != size(colnames,1) ? error("column names must match width of array"):
-      timestamp != unique(timestamp) ? error("there are duplicate dates"):
-      ~(flipud(timestamp) == sort(timestamp) || timestamp == sort(timestamp)) ? error("dates are mangled"):
-      flipud(timestamp) == sort(timestamp) ?
-      new(flipud(timestamp), flipud(values), colnames, instrument) : new(timestamp, values, colnames, instrument)
-  end
-end
+# type FinancialTimeSeries{T<:Float64, N, M<:AbstractInstrument} <: AbstractTimeSeries
+#   #timestamp::Vector{DateTime{ISOCalendar,UTC}}
+#   timestamp::Vector{DateTime}
+#   values::Array{T,N}
+#   colnames::Vector{ASCIIString}
+#   instrument::AbstractInstrument
+#   # inner constructor
+#   function FinancialTimeSeries(#timestamp::Vector{DateTime{ISOCalendar,UTC}},
+#                                timestamp::Vector{DateTime},
+#                                values::Array{T,N},
+#                                colnames::Vector{ASCIIString},
+#                                instrument::AbstractInstrument)
+#     nrow, ncol = size(values, 1), size(values, 2)
+#     nrow != size(timestamp, 1) ? error("values must match length of timestamp"):
+#       ncol != size(colnames,1) ? error("column names must match width of array"):
+#       timestamp != unique(timestamp) ? error("there are duplicate dates"):
+#       ~(flipud(timestamp) == sort(timestamp) || timestamp == sort(timestamp)) ? error("dates are mangled"):
+#       flipud(timestamp) == sort(timestamp) ?
+#       new(flipud(timestamp), flipud(values), colnames, instrument) : new(timestamp, values, colnames, instrument)
+#   end
+# end
 
 # type FinancialTimeSeries{T<:Float64,N} <: AbstractTimeSeries
 # timeseries.jl
