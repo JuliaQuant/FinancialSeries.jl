@@ -1,69 +1,54 @@
-# type TimeArrayMeta{T<:Float64, N, M} <: AbstractTimeSeries
-#   ta::TimeArray{T,N}
-#   metadata::M
-# end
-
+"""
+Financial time series type that includes `TimeSeries.TimeArray` component
+and instrument (stock, currency pair) metadata.
+"""
 type FinancialTimeSeries{T<:Float64, N, M<:Union(AbstractInstrument, AbstractCurrency)} <: AbstractTimeSeries
-  ta::TimeArray{T,N}
+  series::TimeArray{T,N}
   instrument::M
 end
 
-#typealias FinancialTimeSeries{T,N,M} TimeArray{Float64,N,AbstractInstrument}
-##typealias FinancialTimeSeries{T<:Float64,N,M<:AbstractInstrument} TimeArray{T,N,M}
-#typealias FinancialTimeSeries{T,N,M} TimeArray{T<:Float64,N,M<:AbstractInstrument}
-#typealias FinancialTimeSeries{T,N,M} TimeArray{Float64,N,AbstractInstrument}
-#typealias FinancialTimeSeries{N} TimeArray{Float64,N,AbstractInstrument}
-#typealias FinancialTimeSeries{Float64,N,AbstractInstrument} TimeArray{Float64,N,AbstractInstrument}
+function show(io::IO, fts::FinancialTimeSeries)
+  # summary line: instrument type
+  println(io, "")
+  print(io, @sprintf("Financial time series for %s\n", string(typeof(fts.instrument))))
+  println(io, "")
+  # instrument
+  Base.show(io, fts.instrument)
+  println(io, "")
+  # TimeArray
+  Base.show(io, fts.series)
+end
 
-# type FinancialTimeSeries{T<:Float64, N, M<:AbstractInstrument} <: AbstractTimeSeries
-#   #timestamp::Vector{DateTime{ISOCalendar,UTC}}
-#   timestamp::Vector{DateTime}
-#   values::Array{T,N}
-#   colnames::Vector{ASCIIString}
-#   instrument::AbstractInstrument
-#   # inner constructor
-#   function FinancialTimeSeries(#timestamp::Vector{DateTime{ISOCalendar,UTC}},
-#                                timestamp::Vector{DateTime},
-#                                values::Array{T,N},
-#                                colnames::Vector{ASCIIString},
-#                                instrument::AbstractInstrument)
-#     nrow, ncol = size(values, 1), size(values, 2)
-#     nrow != size(timestamp, 1) ? error("values must match length of timestamp"):
-#       ncol != size(colnames,1) ? error("column names must match width of array"):
-#       timestamp != unique(timestamp) ? error("there are duplicate dates"):
-#       ~(flipud(timestamp) == sort(timestamp) || timestamp == sort(timestamp)) ? error("dates are mangled"):
-#       flipud(timestamp) == sort(timestamp) ?
-#       new(flipud(timestamp), flipud(values), colnames, instrument) : new(timestamp, values, colnames, instrument)
-#   end
-# end
+"""
+FinancialTimeSeries type outer constructor with `TimeArray` components.
+"""
+function FinancialTimeSeries{T<:Float64, N}(timestamp::Union(Vector{Date}, Vector{DateTime}),
+                                            values::Array{T,N},
+                                            colnames::Vector{ASCIIString},
+                                            instrument::Union(AbstractInstrument, AbstractCurrency))
+  # utilize TimeArray inner-constructor checks
+  return FinancialTimeSeries(TimeArray(timestamp, values, colnames), instrument)
+end
 
-# type FinancialTimeSeries{T<:Float64,N} <: AbstractTimeSeries
-# timeseries.jl
+"Access timestamp vector"
+timestamp{T,N,M}(fts::FinancialTimeSeries{T,N,M}) = fts.series.timestamp
 
-#     timestamp::Vector{DateTime{ISOCalendar,UTC}}
-#     values::Array{T,N}
-#     colnames::Vector{ASCIIString}
-#     instrument::AbstractInstrument
-#
-#     function FinancialTimeSeries(timestamp::Vector{DateTime{ISOCalendar,UTC}},
-#                                  values::Array{T,N},
-#                                  colnames::Vector{ASCIIString},
-#                                  instrument::AbstractInstrument)
-#
-#                                  nrow, ncol = size(values, 1), size(values, 2)
-#                                  nrow != size(timestamp, 1) ? error("values must match length of timestamp"):
-#                                  ncol != size(colnames,1) ? error("column names must match width of array"):
-#                                  timestamp != unique(timestamp) ? error("there are duplicate dates"):
-#                                  ~(flipud(timestamp) == sort(timestamp) || timestamp == sort(timestamp)) ? error("dates are mangled"):
-#                                  flipud(timestamp) == sort(timestamp) ?
-#                                  new(flipud(timestamp), flipud(values), colnames, instrument):
-#                                  new(timestamp, values, colnames, instrument)
-#     end
-# end
-#
-# FinancialTimeSeries{T<:Float64,N}(d::Vector{DateTime{ISOCalendar,UTC}}, v::Array{T,N}, c::Vector{ASCIIString}, t::AbstractInstrument) = FinancialTimeSeries{T,N}(d,v,c,t)
-# FinancialTimeSeries{T<:Float64,N}(d::DateTime{ISOCalendar,UTC}, v::Array{T,N}, c::Array{ASCIIString,1}, t::AbstractInstrument) = FinancialTimeSeries([d],v,c,t)
-# function FinancialTimeSeries{T,N}(ta::TimeArray{T,N}, ticker::ASCIIString)
-#      dates = datetolastsecond(ta.timestamp)
-#      FinancialTimeSeries(dates, ta.values, ta.colnames, Stock(Ticker(ticker)))
-# end
+### this does not work either
+#timestamp(fts::FinancialTimeSeries) = fts.series.timestamp
+
+"Access values array"
+values{T,N,M}(fts::FinancialTimeSeries{T,N,M}) = fts.series.values
+
+"Access column names vector"
+colnames{T,N,M}(fts::FinancialTimeSeries{T,N,M}) = fts.series.colnames
+
+"Access instrument object"
+instrument{T,N,M}(fts::FinancialTimeSeries{T,N,M}) = fts.instrument
+
+"Returns, method string can be `simple` or `log`"
+function percentchange{T,N,M}(fts::FinancialTimeSeries{T,N,M};
+                              method = "simple")
+  return percentchange(fts.series, method=method)
+end
+
+### TODO: wrappers for extracting column by string etc.
