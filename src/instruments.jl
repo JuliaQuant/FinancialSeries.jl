@@ -2,7 +2,7 @@ abstract AbstractFinancialID
 abstract AbstractCurrency
 abstract AbstractInstrument
 
-type Ticker 
+type Ticker
     id::String
 end
 
@@ -68,3 +68,37 @@ const U = "Sep"
 const X = "Oct"
 const V = "Nov"
 const Z = "Dec"
+
+############ show methods ################
+
+function show(io::IO, c::CUSIP)
+    print(io, @sprintf("%s", c.id))
+end
+
+function show(io::IO, c::ReutersID)
+    print(io, @sprintf("%s", c.id))
+end
+
+function show(io::IO, c::BloombergID)
+    print(io, @sprintf("%s", c.id))
+end
+
+function show(io::IO, t::Ticker)
+    print(io, @sprintf("%s", t.id))
+end
+
+function show(io::IO, s::Stock)
+    println(io, @sprintf("ticker:         %s", s.ticker))
+#    println(io, @sprintf("cusip:          %s", s.cusip))
+    println(io, @sprintf("currency:       %s", s.currency))
+    println(io, @sprintf("tick:           %s", s.tick))
+    println(io, @sprintf("multiplier:     %s", s.multiplier))
+end
+
+function show(io::IO, c::Currency)
+    print(io, @sprintf("%s", c.origin))
+end
+
+function show(io::IO, c::CurrencyPair)
+    print(io, @sprintf("%s/%s", string(c.baseside), string(c.quoteside)))
+end

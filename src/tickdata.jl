@@ -1,3 +1,5 @@
+### TODO: rewrite this type similarly to FinancialTimeSeries
+
 type TickData{T<:Float64,N}  <: AbstractTimeSeries
 
     timestamp::Vector{Date}
@@ -5,15 +7,15 @@ type TickData{T<:Float64,N}  <: AbstractTimeSeries
     colnames::Vector{ASCIIString}
     instrument::AbstractInstrument
 
-    function TickData(timestamp::Vector{Date}, 
+    function TickData(timestamp::Vector{Date},
                       values::Array{T,N},
                       colnames::Vector{ASCIIString},
                       instrument::AbstractInstrument)
 
                       v = findfirst(colnames .== "Volume") # first sort the values in ascending order
                       #vals = sortrows(values, by=x->x[v])
-                      if v > 0 
-                          vals = sortrows(values, by=x->x[v]) 
+                      if v > 0
+                          vals = sortrows(values, by=x->x[v])
                       else
                           vals = values # don't sort if no Valume column available
                       end
@@ -21,7 +23,7 @@ type TickData{T<:Float64,N}  <: AbstractTimeSeries
                       nrow != size(timestamp, 1) ? error("values must match length of timestamp"):
                       ncol != size(colnames,1) ? error("column names must match width of array"):
                       ~(flipud(timestamp) == sort(timestamp) || timestamp == sort(timestamp)) ? error("dates are mangled"):
-                      flipud(timestamp) == sort(timestamp) ? 
+                      flipud(timestamp) == sort(timestamp) ?
                       new(flipud(timestamp), vals, colnames, instrument): # then the dates if necessary
                       new(timestamp, vals, colnames, instrument)
     end
@@ -30,10 +32,10 @@ end
 TickData{T<:Float64,N}(d::Vector{Date}, v::Array{T,N}, c::Vector{ASCIIString}, t::AbstractInstrument) = TickData{T,N}(d,v,c,t)
 TickData{T<:Float64,N}(d::Date, v::Array{T,N}, c::Array{ASCIIString,1}, t::AbstractInstrument) = TickData([d],v,c,t)
 
-# ########################### TickData 
-#  
+# ########################### TickData
+#
 # function show(io::IO, ft::TickData)
-#   # variables 
+#   # variables
 #   nrow          = size(ft.values, 1)
 #   ncol          = size(ft.values, 2)
 #   intcatcher    = falses(ncol)
@@ -49,20 +51,20 @@ TickData{T<:Float64,N}(d::Date, v::Array{T,N}, c::Array{ASCIIString,1}, t::Abstr
 #       for m in 1:ncol
 #           push!(colwidth, max(strwidth(ft.colnames[m]), strwidth(@sprintf("%.2f", maximum(ft.values[:,m])))))
 #       end
-# 
+#
 #   # summary line
 #   print(io,@sprintf("%dx%d %s %s to %s", nrow, ncol, typeof(ft), string(ft.timestamp[1]), string(ft.timestamp[nrow])))
 #   println(io,"")
 #   println(io,"")
-# 
+#
 #   # row label line
 #    print(io, ^(" ", spacetime), ft.colnames[1], ^(" ", colwidth[1] + 2 -firstcolwidth))
-# 
+#
 #    for p in 2:length(colwidth)
 #      print(io, ft.colnames[p], ^(" ", colwidth[p] - strwidth(ft.colnames[p]) + 2))
 #    end
 #    println(io,"")
-#  
+#
 #   # timestamp and values line
 #     if nrow > 7
 #         for i in 1:4
