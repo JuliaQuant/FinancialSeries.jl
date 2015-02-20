@@ -1,19 +1,22 @@
 facts("constructors") do
   ticker_str = "TICKER"
-  context("inner constructor from TimeArray") do
-    fts = FinancialSeries.FinancialTimeSeries(
-      ohlc, FinancialSeries.Stock(FinancialSeries.Ticker(ticker_str)))
-    @fact values(fts.series["Open"])[1] => roughly(104.88)
-  end
-  context("from time array components and instrument object") do
-    @fact_throws FinancialSeries.FinancialTimeSeries(
-      [DateTime(1795,10,31)], [0.0 0.0], ["col-1" "col-2"], "just-a-string")
-    fts = FinancialSeries.FinancialTimeSeries(
-      [DateTime(1795,10,31)], [0.0 0.0], ["col-1", "col-2"],
-      FinancialSeries.Stock(FinancialSeries.Ticker(ticker_str)))
-    @fact isa(fts.instrument, FinancialSeries.Stock) => true
-    @fact string(fts.instrument.ticker) => ticker_str
-  end
+#   context("inner constructor from TimeArray") do
+#     fts = FinancialSeries.FinancialTimeSeries(
+#       ohlc, FinancialSeries.Stock(FinancialSeries.Ticker(ticker_str)))
+#     @fact values(fts.series["Open"])[1] => roughly(104.88)
+#   end
+#   context("from TimeArray components and instrument object") do
+#     @fact_throws FinancialSeries.FinancialTimeSeries(
+#       [DateTime(1795,10,31)], [0.0 0.0], ["col-1" "col-2"], "just-a-string")
+#     fts = FinancialSeries.FinancialTimeSeries(
+#       [DateTime(1795,10,31)], [0.0 0.0], ["col-1", "col-2"],
+#       FinancialSeries.Stock(FinancialSeries.Ticker(ticker_str)))
+#     @fact isa(fts.instrument, FinancialSeries.Stock) => true
+#     @fact string(fts.instrument.ticker) => ticker_str
+#   end
+
+  ### TODO: redo these tests (or delete?) now that TimeArray has meta
+  @fact 0 => 1
 end
 
 facts("element and time series method wrappers") do
@@ -47,49 +50,7 @@ facts("time series method wrappers") do
 #   end
 
   ### TODO: fix wrapper functions
+
+  ## TODO: add tests for preserving meta after percentchange etc. calls
   @fact 0 => 1
 end
-
-
-
-### TODO below: is this all from TimeArray needed?
-
-# facts("base imports") do
-
-#   context("length is correct") do
-#     @fact_throws log(-1)
-#     @fact_throws sum(foo, bar)
-#   end
-
-#   context("getindex from single Int") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from Int range") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from Int array") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from colname") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from colnames") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from single date") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from date array") do
-#     @fact_throws log(-1)
-#   end
-
-#   context("getindex from date range") do
-#     @fact_throws log(-1)
-#   end
-# end
